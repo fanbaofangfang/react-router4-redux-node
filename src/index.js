@@ -11,6 +11,7 @@ import AuthRouter from "./container/authRouter/authRouter";
 import BossInfo from "./container/bossinfo/BossInfo";
 import GeniusInfo from "./container/geniusinfo/geniusInfo";
 import Dashboard from "./component/dashboard/Dashboard";
+import Chat from  "./component/chat/Chat";
 import reducers from "./reducers";
 const store = createStore(
   reducers,
@@ -27,6 +28,7 @@ ReactDOM.render(
           <Route path="/register" component={Register} />
           <Route path="/bossinfo" component={BossInfo} />
           <Route path="/geniusinfo" component={GeniusInfo} />
+          <Route path="/chat/:user" component={Chat} />
           <Route component={Dashboard} />
         </Switch>
       </div>

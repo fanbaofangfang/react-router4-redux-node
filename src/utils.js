@@ -6,3 +6,7 @@ export function getRedirectUrl({ avatar, type }) {
   }
   return url;
 }
+
+export function getChatid(userid, targetid) {
+  return [userid, targetid].sort().join("-");
+}

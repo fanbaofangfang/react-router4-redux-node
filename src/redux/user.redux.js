@@ -3,6 +3,7 @@ import { getRedirectUrl } from "../utils";
 const AUTH_SUCCESS = "AUTH_SUCCESS";
 const ERROR_MSG = "ERROR_MSG";
 const LOAD_DATA = "LOAD_DATA";
+const LOGOUT = "LOGOUT";
 
 const initialState = {
   user: "",
@@ -25,6 +26,8 @@ export function user(state = initialState, action) {
         ...state,
         ...action.payload
       };
+    case LOGOUT:
+      return { ...initialState, redirectTo: "/login" };
     case ERROR_MSG:
       return { ...state, isAuth: false, errorMsg: action.payload };
     default:
@@ -39,7 +42,7 @@ export function loadData(data) {
   return { type: LOAD_DATA, payload: data };
 }
 export function authSuccess(data) {
-    console.log(data)
+  console.log(data);
   return { type: AUTH_SUCCESS, payload: data };
 }
 
@@ -75,7 +78,9 @@ export function login({ user, pwd }) {
     });
   };
 }
-
+export function logoutSubmit() {
+  return {type:LOGOUT}
+}
 export function getUserInfo({ callback }) {
   return dispatch => {
     axios.get("/user/info").then(res => {

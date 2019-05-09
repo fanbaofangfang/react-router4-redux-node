@@ -16,7 +16,7 @@ class UserCard extends React.Component {
           <WhiteSpace size="lg" />
           {list.map(v =>
             v.avatar ? (
-              <Card key={v._id}>
+              <Card key={v._id} onClick={() => this.props.history.push(`/chat/${v._id}`)}>
                 <WhiteSpace size="lg" />
                 <Card.Header
                   title={v.title}

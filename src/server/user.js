@@ -4,18 +4,32 @@ const Router = express.Router();
 
 const model = require("./model");
 const User = model.getModels("user");
-
+const Chat = model.getModels("chat");
 const _filter = { pwd: 0, _v: 0 };
 // User.remove({},function(err,doc){
 //     console.log()
 // })
+Router.get("/msgList", function(req, res) {
+  const { userid } = req.cookies;
+  User.find({}, function(err, userDoc) {
+    let users = {};
+    userDoc.forEach(ele => {
+      users[ele._id] = ele;
+    });
+    Chat.find({ $or: [{ from: userid }, { to: userid }] }, function(err, doc) {
+      if (!err) {
+        return res.json({ code: 0, data: { users, msgList: doc } });
+      }
+    });
+  });
+});
 Router.post("/login", function(req, res) {
   const { pwd, user } = req.body;
   User.findOne({ user, pwd: mdsFunc(pwd) }, _filter, function(err, doc) {
     if (doc) {
-      const { user, type, _id } = doc;
+      const { _id } = doc;
       res.cookie("userid", _id);
-      res.json({ code: 0, data: { user, type, _id } });
+      res.json({ code: 0, data: doc });
     } else {
       res.json({ code: 1, msg: "用户不存在" });
     }
@@ -74,11 +88,10 @@ Router.get("/info", function(req, res) {
     if (err) {
       return res.json({ code: 1, msg: "后端出错" });
     }
-    const { user, type, _id } = doc;
     if (!doc) {
       return res.json({ code: 1, msg: "后端出错" });
     } else {
-      return res.json({ code: 0, data: { user, type, _id } });
+      return res.json({ code: 0, data: doc });
     }
   });
 });

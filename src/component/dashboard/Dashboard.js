@@ -7,21 +7,21 @@ import Boss from "../boss/Boss";
 import Genius from "../genius/Genius";
 import UserInfo from "../userInfo/UserInfo";
 import Msg from "../msg/Msg";
-// import { getMsgList } from "../../redux/chat.redux";
+import { getMsgList, getMsgRecv } from "../../redux/chat.redux";
 
 @connect(
   state => state,
-  { }
+  { getMsgList, getMsgRecv }
 )
- class Dashboard extends React.Component {
+class Dashboard extends React.Component {
   constructor(props) {
     super(props);
   }
   componentDidMount() {
-    // if (!this.props.chat.chatmsg.length) {
-    //   this.props.getMsgList();
-    //   this.props.receiveMsg();
-    // }
+    if (!this.props.chat.msgList.length) {
+      this.props.getMsgList();
+      this.props.getMsgRecv();
+    }
   }
   render() {
     const user = this.props.user;

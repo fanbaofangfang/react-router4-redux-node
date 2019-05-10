@@ -9,6 +9,13 @@ const _filter = { pwd: 0, _v: 0 };
 // User.remove({},function(err,doc){
 //     console.log()
 // })
+Router.post("/msgRead",function(req,res){
+    const {userid} = req.cookies;
+    const {from} = req.body;
+    Chat.update({from,to:userid},{read: true},{multi: true},function(err,doc){
+        return res.json({code:0,num:doc.nModified})
+    })
+})
 Router.get("/msgList", function(req, res) {
   const { userid } = req.cookies;
   User.find({}, function(err, userDoc) {

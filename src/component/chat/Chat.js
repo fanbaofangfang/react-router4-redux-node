@@ -1,13 +1,18 @@
 import React from "react";
 import { InputItem, List, NavBar, Icon, Grid } from "antd-mobile";
 import { connect } from "react-redux";
-import { getMsgList, sendMsg, getMsgRecv } from "../../redux/chat.redux";
+import {
+  getMsgList,
+  sendMsg,
+  getMsgRecv,
+  getMsgRead
+} from "../../redux/chat.redux";
 import { getChatid } from "../../utils";
 const Item = List.Item;
 
 @connect(
   state => state,
-  { getMsgList, sendMsg, getMsgRecv }
+  { getMsgList, sendMsg, getMsgRecv, getMsgRead }
 )
 class Chat extends React.Component {
   constructor(props) {
@@ -24,6 +29,9 @@ class Chat extends React.Component {
       this.props.getMsgRecv();
     }
   }
+  componentWillUnmount() {
+    this.props.getMsgRead({ from: this.props.match.params.user });
+  }
   handleSubmit = () => {
     const from = this.props.user._id;
     const to = this.props.match.params.user;
@@ -34,9 +42,9 @@ class Chat extends React.Component {
     });
   };
   resize = () => {
-    // setTimeout(() => {
-    //   window.dispatchEvent(new Event("resize"));
-    // }, 0);
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 0);
   };
   render() {
     const emoji = [
@@ -187,7 +195,7 @@ class Chat extends React.Component {
               onChange={v => this.setState({ text: v })}
               extra={
                 <div>
-                  {/* <span
+                  <span
                     onClick={() =>
                       this.setState(
                         { showEmoj: !this.state.showEmoj },
@@ -197,7 +205,7 @@ class Chat extends React.Component {
                     style={{ marginRight: 10 }}
                   >
                     🙂
-                  </span> */}
+                  </span>
                   <span onClick={this.handleSubmit}>发送</span>
                 </div>
               }
@@ -205,77 +213,20 @@ class Chat extends React.Component {
               信息
             </InputItem>
           </List>
+          {this.state.showEmoj ? (
+            <Grid
+              data={emoji}
+              isCarousel
+              columnNum={9}
+              carouselMaxRow={3}
+              onClick={el => {
+                this.setState({ text: this.state.text + el.text });
+              }}
+            />
+          ) : null}
         </div>
       </div>
     );
-    //   <div id="chat-page">
-    //     <NavBar
-    //       mode="dark"
-    //       icon={<Icon type="left" />}
-    //       onLeftClick={() => this.props.history.goBack()}
-    //     >
-    //       {users[userid].name}
-    //     </NavBar>
-
-    //     {chatmsgs.map(v => {
-    //       return v.from == userid ? (
-    //         <List key={v._id}>
-    //           <Item thumb={require(`../img/${users[v.from].avator}.png`)}>
-    //             {v.content}
-    //           </Item>
-    //         </List>
-    //       ) : (
-    //         <List key={v._id}>
-    //           <Item
-    //             extra={
-    //               <img src={require(`../img/${users[v.from].avator}.png`)} />
-    //             }
-    //             className="chat-me"
-    //           >
-    //             {v.content}
-    //           </Item>
-    //         </List>
-    //       );
-    //     })}
-    // <div className="socket-footer">
-    //   <List>
-    //     <InputItem
-    //       placeholder="请输入"
-    //       value={this.state.text}
-    //       onChange={v => this.setState({ text: v })}
-    //       extra={
-    //         <div>
-    //           <span
-    //             onClick={() =>
-    //               this.setState(
-    //                 { showEmoj: !this.state.showEmoj },
-    //                 this.resize()
-    //               )
-    //             }
-    //             style={{ marginRight: 10 }}
-    //           >
-    //             🙂
-    //           </span>
-    //           <span onClick={this.handleSubmit}>发送</span>
-    //         </div>
-    //       }
-    //     >
-    //       信息
-    //     </InputItem>
-    //   </List>
-    //   {this.state.showEmoj ? (
-    //     <Grid
-    //       data={emoji}
-    //       isCarousel
-    //       columnNum={9}
-    //       carouselMaxRow={3}
-    //       onClick={el => {
-    //         this.setState({ text: this.state.text + el.text });
-    //       }}
-    //     />
-    //   ) : null}
-    // </div>;
-    //   </div>
   }
 }
 export default Chat;

@@ -32,11 +32,22 @@ export function chat(state = initialState, action) {
         unread: state.unread + num
       };
     case MSG_READ:
+      return {
+        ...state,
+        msgList: state.msgList.map(v =>
+          v.from === action.payload.from && v.to === action.payload.to
+            ? { ...v, read: true }
+            : v
+        ),
+        unread: state.unread - action.payload.num
+      };
     default:
       return state;
   }
 }
-
+export function msgRead(data) {
+  return { type: MSG_READ, payload: data };
+}
 export function msgList(data) {
   return { type: MSG_LIST, payload: data };
 }
@@ -65,5 +76,16 @@ export function getMsgRecv() {
 export function sendMsg({ from, to, msg }) {
   return dispatch => {
     socket.emit("sendMsg", { from, to, msg });
+  };
+}
+export function getMsgRead({ from }) {
+  return (dispatch, getState) => {
+    const userid = getState().user._id;
+    axios.post("/user/msgRead", { from, to: userid }).then(res => {
+      console.log(res);
+      if (res.status === 200 && res.data.code === 0) {
+        dispatch(msgRead({ from, to: userid, num: res.data.num }));
+      }
+    });
   };
 }

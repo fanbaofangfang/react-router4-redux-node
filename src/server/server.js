@@ -14,11 +14,14 @@ io.on("connection", function(socket) {
   socket.on("sendMsg", function(data) {
     const { from, to, msg } = data;
     const chatid = [from, to].sort().join("-");
-    Chat.create({ chatid, from, to, content: msg }, function(err, doc) {
-      if (!err) {
-        io.emit("recvMsg", doc);
+    Chat.create(
+      { chatid, from, to, content: msg, create_time: new Date().getTime() },
+      function(err, doc) {
+        if (!err) {
+          io.emit("recvMsg", doc);
+        }
       }
-    });
+    );
   });
 });
 app.use(cookieParser());
